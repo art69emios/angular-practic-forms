@@ -1,0 +1,83 @@
+<h1>FORMS</h1>
+
+<pre>
+  Task 1
+
+  Create a form with email, password and submit button fields. 
+  Use a two-way binding to the fields. 
+  After clicking Submit, output the values entered from the form.
+</pre>
+
+<input type="text" [(ngModel)]="login" ><br>
+<input type="password" [(ngModel)]="passwrd"><br>
+<br>
+<button (click)="start()">show value</button>
+<div *ngIf="toggle">
+  <p>login - {{login}}</p>
+  <p>passwrd - {{passwrd}}</p>
+</div>
+<hr>
+<pre>
+  Assignment 2 
+
+  Create a form from the task above, using reactive forms.
+  Add validation to the fields and appropriate styles to represent their status. 
+</pre>   
+
+<form novalidate [formGroup]="form" (ngSubmit)="onSubmit(form)">
+   <input type="text" formControlName="login2" required><br>
+   <input type="password" formControlName="password" required><br>
+   <br>
+   <input type="submit" [disabled]="form.invalid"><br>
+{{form.value | json}}
+</form>
+
+<pre>
+   Task 3.
+
+   Implement through FormBuilder. 
+   Add input type="checkbox" to the form. 
+   The button should only be active when the form is properly filled out and the checkbox is in the selected state. 
+   Add non-mandatory "Your Hobbies" fields to the form, using a 
+   FormArray with the ability to create them. 
+   Display the output of the generated form object.
+
+   Task 4 
+
+   Add an error message to the form when it is submitted. 
+   After submitting the data, the form should automatically be cleared to its original state.
+</pre>
+
+<form novalidate [formGroup]="formFB" (ngSubmit)="onSubmit(form)">
+   <input type="text" formControlName="name"><br>
+   <div *ngIf="formFB.controls.name.invalid && formFB.controls.name.touched">
+      <p *ngIf="formFB.controls.name.errors.required"> field required!</p>
+   </div>
+   <input type="text" formControlName="lastName"><br>
+   <div *ngIf="formFB.controls.lastName.invalid && formFB.controls.lastName.touched">
+      <p *ngIf="formFB.controls.lastName.errors.required"> field required!</p>
+      <p *ngIf="formFB.controls.lastName.errors.minlength"> 
+         the length of the string must be {{formFB.controls.lastName.errors.minlength.requiredLength}}, now {{formFB.controls.lastName.errors.minlength.actualLength}}
+      </p>
+
+   </div>
+   <input type="tel" formControlName="phone"><br>
+   <div *ngIf="formFB.get('phone').hasError('required') && formFB.get('phone').touched" >field required!</div>
+   <div *ngIf="formFB.get('phone').hasError('minlength') && formFB.get('phone').touched" >field minlength {{formFB.get('phone').errors.minlength.requiredLength}} now {{formFB.get('phone').errors.minlength.actualLength}}</div>
+
+   <label>
+      <input type="checkbox" formControlName="agree">
+      Confirm
+      <div *ngIf="formFB.get('agree').hasError('required') && formFB.get('agree').touched" >field required!!</div>
+   </label><br>
+   <label formArrayName="hobbie" *ngFor="let hobbies of formFB.get('hobbie').value; let i = index">
+      hobbie {{i + 1}}
+      <input type="text"  [formControlName]="i"><br>
+   </label><br>
+   <button (click)="addHobbie()">add Hobbies</button>
+   <button (click)="deleteHobbie()">delete Hobbies</button>
+   <input type="submit" [disabled]="formFB.invalid">
+
+</form>
+{{formFB.value | json}}
+
